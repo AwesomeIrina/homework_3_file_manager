@@ -33,9 +33,10 @@ public:
     explicit Tests()
     {
         //Путь к тестам
-        //Не сделала относительный путь
+        //Не сделала относительный путь, поскольку по какой-то причине мой компьютер не поддерживает этот формат
         QTextStream cout(stdout), cin(stdin);
-        QString path("../QtProjects/homework_3_file_manager/Tests/Test1");
+        QString path("C:/QtProjects/homework_3_file_manager/Tests/Test1");
+        //Цикл для перебора всех тестов
         for(int i = 1; i<6; i++)
         {
             if(i == 5)
@@ -47,7 +48,7 @@ public:
             {
                 path[48] = QChar('0' + i);
             }
-
+            //вывод результатов на консоль
             cout<<path<<endl;
             choose_strategy = new GroupByFolder();
             cout<<"Group by folder:"<<endl;
