@@ -54,13 +54,13 @@ QList<fileSizeInfo> GroupByFolder:: SizeInfo(const QString & path)
             return QList<fileSizeInfo>();
         }
 
-        foreach(QFileInfo size, QDir(path).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden, QDir::Name))
+        foreach(QFileInfo size, QDir(path).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir:: System, QDir::Name))
         {
             size_.append(FolderSize(size.absoluteFilePath()));
             res_size += size_[size_.size()-1];
         }
 
-        foreach(QFileInfo size, QDir(path).entryInfoList(QDir::Files | QDir::NoDotAndDotDot|QDir::Hidden, QDir::Name)){
+        foreach(QFileInfo size, QDir(path).entryInfoList(QDir::Files | QDir::NoDotAndDotDot|QDir::Hidden | QDir:: System, QDir::Name)){
             size_.append(size.size());
             res_size += size_[size_.size()-1];
         }
@@ -72,7 +72,7 @@ QList<fileSizeInfo> GroupByFolder:: SizeInfo(const QString & path)
 
         auto iter = size_.begin();
 
-        foreach(QFileInfo folder_info, QDir(path).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot|QDir::Hidden, QDir::Name))
+        foreach(QFileInfo folder_info, QDir(path).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot|QDir::Hidden | QDir:: System, QDir::Name))
         {
         if(folder_info.fileName().mid(folder_info.fileName().lastIndexOf('.') + 1) == "lnk")
         {
@@ -97,8 +97,6 @@ QList<fileSizeInfo> GroupByFolder:: SizeInfo(const QString & path)
     }
 
     return res;
-
-
 }
 
 
