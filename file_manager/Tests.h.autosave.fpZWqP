@@ -1,0 +1,18 @@
+#ifndef TESTS_H
+#define TESTS_H
+#include "strategy.h"
+#include "groupByFolder.h"
+#include "groupByType.h"
+#include "QString"
+
+class Tests
+{
+private:
+    QString console(QList<fileSizeInfo> info);
+public:
+    explicit Tests(){
+        
+    }
+};
+
+#endif // TESTS_H

@@ -1,0 +1,20 @@
+#ifndef TESTS_H
+#define TESTS_H
+#include "strategy.h"
+#include "groupByFolder.h"
+#include "groupByType.h"
+#include "QString"
+
+class Tests
+{
+private:
+    QString console(QList<fileSizeInfo> info);
+public:
+    explicit Tests(){
+        QTextStream cout(stdout), cin(stdin);
+        QString path("../homework_3_file_manager/Tests/Test1");
+        QString answers[][]
+    }
+};
+
+#endif // TESTS_H
