@@ -6,23 +6,34 @@
 #include "QDir"
 
 using namespace std;
-
+//Конкретный класс для группировки по папкам
 class GroupByFolder: public Strategy
 {
 private:
+    //Функция для вычисление размера папки
+    //На вход подаётся путь к папке
+    //На выходе - размер всей папки в байтах
     qint32 FolderSize(const QString&path);
 public:
     GroupByFolder() {};
+    //функция для вычисление размеров содержимого папки
+    //также здесь производится группировка по элементам папки
+    //На вход подаётся путь к файлу
+    //На выходе - данные о размере каждого элемента в папке
     QList<fileSizeInfo> SizeInfo(const QString & path);
 };
 
+//Функция для вычисление размера папки
+//На вход подаётся путь к папке
+//На выходе - размер всей папки в байтах
 qint32 GroupByFolder::FolderSize(const QString &path){
     qint32 res = 0;
+    //Цикл по папкам в текущей папке
     foreach (QFileInfo size, QDir(path).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden))
     {
         res+= FolderSize(size.absoluteFilePath());
     }
-
+    //Цикл по всем файлам в папке
     foreach(QFileInfo result, QDir(path).entryInfoList(QDir::Files | QDir::NoDotAndDotDot| QDir::Hidden))
     {
         res+= result.size();
@@ -31,65 +42,73 @@ qint32 GroupByFolder::FolderSize(const QString &path){
     return res;
 }
 
+//функция для вычисление размеров содержимого папки
+//также здесь производится группировка по элементам папки
+//На вход подаётся путь к файлу
+//На выходе - данные о размере каждого элемента в папке
 QList<fileSizeInfo> GroupByFolder:: SizeInfo(const QString & path)
 {
     QTextStream cout(stdout), cin(stdin);
     QList<fileSizeInfo> res;
     QList<qint32> size_;
     qint32 res_size = 0;
-
+//Проверка, существует ли файл
     if (!QFileInfo(path).exists()){
         cout<<"There is no object like "<<path<<endl;
         return QList<fileSizeInfo>();
     }
-
+//Проверка на читабельность
     if (!QFileInfo(path).isReadable()){
         cout<<"The object "<<path<<" is not readable"<<endl;
         return QList<fileSizeInfo>();
     }
-
+//Если файл является папкой
     if(QFileInfo(path).isDir()){
+        //Если папка пуста, пользователь получает соответствующее сообщение
         if(QDir(path).isEmpty()){
             cout<<"The object "<<path<<" is empty"<<endl;
             return QList<fileSizeInfo>();
         }
-
+//Цикл по всем папкам в папке
         foreach(QFileInfo size, QDir(path).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir:: System, QDir::Name))
         {
             size_.append(FolderSize(size.absoluteFilePath()));
             res_size += size_[size_.size()-1];
         }
-
+//Цикл по файлам в текущей папке
         foreach(QFileInfo size, QDir(path).entryInfoList(QDir::Files | QDir::NoDotAndDotDot|QDir::Hidden | QDir:: System, QDir::Name)){
             size_.append(size.size());
             res_size += size_[size_.size()-1];
         }
-
+//Если итоговый размер равен нулю, пользователь получает соответствующее сообщение
         if(res_size == 0){
             cout<<"The object "<<path<<" is empty";
             return QList<fileSizeInfo>();
         }
 
         auto iter = size_.begin();
-
+//Цикл по папкам в текущей папке
+//Вычисление процентного соотношения
         foreach(QFileInfo folder_info, QDir(path).entryInfoList(QDir::Dirs | QDir::NoDotAndDotDot|QDir::Hidden | QDir:: System, QDir::Name))
         {
-        if(folder_info.fileName().mid(folder_info.fileName().lastIndexOf('.') + 1) == "lnk")
-        {
-            continue;
-        }
+            if(folder_info.fileName().mid(folder_info.fileName().lastIndexOf('.') + 1) == "lnk")
+            {
+                continue;
+            }
 
-        res.append(fileSizeInfo(folder_info.fileName(), *iter, ((float)*iter/res_size)*100));
-        iter++;
+            res.append(fileSizeInfo(folder_info.fileName(), *iter, ((float)*iter/res_size)*100));
+            iter++;
         }
-
+//Цикл по остальным файлам в папке
+//Вычисление процентного соотношения
         foreach(QFileInfo file, QDir(path).entryInfoList(QDir::Files | QDir::NoDotAndDotDot | QDir:: Hidden | QDir:: System, QDir::Name))
         {
             res.append(fileSizeInfo(file.fileName(), *iter, ((float)*iter/res_size)*100));
             iter++;
         }
     }
-
+//Если на вход подали не папку, а файл
+//Просто вычисляется размер, а процентное соотношение устанавливается 100
     else
     {
         cout<<"Files: "<<endl;
