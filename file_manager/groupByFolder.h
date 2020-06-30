@@ -92,6 +92,7 @@ QList<fileSizeInfo> GroupByFolder:: SizeInfo(const QString & path)
 
     else
     {
+        cout<<"Files: "<<endl;
         qint32 file_size = QFileInfo(path).size();
         res.append(fileSizeInfo(QFileInfo(path).fileName(), file_size, 100));
     }

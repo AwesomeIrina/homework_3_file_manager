@@ -14,9 +14,10 @@ private:
         QString res;
         for(auto it = info.begin(); it != info.end(); it++)
         {
+            res+= it -> fileName + ", size in percents: ";
             if(it->percent < 0.01 && it->percent != 0)
             {
-                res += "<0.01% but != 0\n";
+                res += "<0.01%\n";
             }
             else
             {
@@ -30,15 +31,16 @@ public:
     {
         QTextStream cout(stdout), cin(stdin);
         QString path("C:/QtProjects/homework_3_file_manager/Tests/Test1");
-        for(int i = 1; i<4; i++)
+        for(int i = 1; i<6; i++)
         {
-            if(i == 3)
+            if(i == 5)
             {
+                path[48] = QChar('0' + i);
                 path.append(".txt");
             }
             else
             {
-                path[-1] = QChar('0' + i);
+                path[48] = QChar('0' + i);
             }
 
             cout<<path<<endl;
